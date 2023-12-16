@@ -21,11 +21,16 @@ def create_app(test_config=None):
             # Return the image data as a response
             return Response(image_data, content_type='image/jpeg')
 
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI='sqlite:///car_app.sqlite',
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    )
+    # Update the SQLALCHEMY_DATABASE_URI to use MySQL
+    # app.config.from_mapping(
+    #     SECRET_KEY='dev',
+    #     SQLALCHEMY_DATABASE_URI='sqlite:///car_app.sqlite',
+    #     SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    # )
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://car_rental_usr:car_rental_pwd@localhost/car_rental_db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECRET_KEY'] = 'dev'  # Add your own secret key here
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
