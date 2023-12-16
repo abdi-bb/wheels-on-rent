@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <style>
+        .banner {
+            background-image: url('{{ url_for('static', filename='assets/img/featured4.png') }}');
+            background-size: cover;
+            background-position: right;
+            background-attachment: fixed;
+            background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%),
+                        url('{{ url_for('static', filename='assets/img/featured4.png') }}');
+        }
+    </style>
+    <!-- Banner Section -->
+    <header class="banner text-white py-28 text-center pb-18">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold">Discover Your Next Adventure.</h1>
+            <p class="mt-4 text-lg font-semibold">Rent a car and hit the road with confidence.</p>
+            <a href="{{ url_for('car.guest_mode') }}"><button class="bg-yellow-500 hover:bg-yellow-600 text-white text-lg font-semibold py-3 px-8 mt-8 rounded-full">Get Started<i class="fa-solid fa-arrow-right ml-2 w-2"></i></button></a>
+        </div>
+    </header>
+
+    <!-- Featured Cars Section -->
+    <section class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Featured Cars</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                <!-- Featured Car 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="{{ url_for('static', filename='assets/img/featured3.png') }}" alt="Car 1" class="w-full h-48 object-cover p-3">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold">AUDI S8 Plus</h3>
+                        <p class="text-gray-600">The Audi S8 Plus is a high-performance luxury sedan that is perfect for drivers who want the best of both worlds.</p>
+                        <a href="{{ url_for('car.guest_mode') }}"><button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 mt-4 rounded">View More Cars</button></a>
+                    </div>
+                </div>
+
+                <!-- Featured Car 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="{{ url_for('static', filename='assets/img/featured4.png') }}" alt="Car 2" class="w-full h-48 object-cover p-3">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold">PORSCHE Boxter</h3>
+                        <p class="text-gray-600">The Porsche Boxster is a perfect sports car for a fun driving experience. It is also a great choice for drivers who want a stylish sports car.</p>
+                        <a href="{{ url_for('car.guest_mode') }}"><button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 mt-4 rounded">View More Cars</button></a>
+                    </div>
+                </div>
+
+                <!-- Featured Car 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="{{ url_for('static', filename='assets/img/featured5.png') }}" alt="Car 3" class="w-full h-48 object-cover p-3">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold">PORSCHE Taycan</h3>
+                        <p class="text-gray-600">The Porsche Taycan is a truly innovative and groundbreaking car. It is the perfect example of a leader in the development of vehicles.</p>
+                        <a href="{{ url_for('car.guest_mode') }}"><button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 mt-4 rounded">View More Cars</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="bg-white py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Why Choose Us?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Benefit 1 -->
+                <div class="text-center">
+                    <img src="{{ url_for('static', filename='assets/icons/key-solid.svg') }}" alt="Benefit 1" class="w-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Convenience</h3>
+                    <p class="text-gray-600">Easy online booking and pick-up/drop-off options.</p>
+                </div>
+
+                <!-- Benefit 2 -->
+                <div class="text-center">
+                    <img src="{{ url_for('static', filename='assets/icons/car-side.svg') }}" alt="Benefit 2" class="w-16 h-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Variety</h3>
+                    <p class="text-gray-600">Wide range of cars to suit your needs.</p>
+                </div>
+
+                <!-- Benefit 3 -->
+                <div class="text-center">
+                    <img src="{{ url_for('static', filename='assets/icons/dollar.svg') }}" alt="Benefit 3" class="w-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Affordability</h3>
+                    <p class="text-gray-600">Competitive prices and special offers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
