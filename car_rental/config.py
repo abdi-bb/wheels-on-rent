@@ -1,6 +1,8 @@
 import os
 from flask import Flask, send_from_directory, url_for, send_file, Response, render_template, redirect
 
+from car_rental.models.car import Car
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -28,9 +30,9 @@ def create_app(test_config=None):
     #     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     # )
     
+    app.config['SECRET_KEY'] = 'dev'  # Add your own secret key here
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://car_rental_usr:car_rental_pwd@localhost/car_rental_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = 'dev'  # Add your own secret key here
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -55,7 +57,6 @@ def create_app(test_config=None):
     def home():
         return render_template('home.html')
 
-    from .models.car import Car  # Import the Car model
     from . import db
     db.init_app(app)
 
