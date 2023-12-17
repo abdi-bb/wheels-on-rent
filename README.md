@@ -39,7 +39,7 @@ To get started with WheelsOnRent, follow these steps after cloning the repositor
 6. Initialize the database by running the following command:
 
    ```bash
-   flask --app car_app init-db
+   flask init-db
    ```
 
    This command will create the necessary database tables.
