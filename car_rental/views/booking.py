@@ -3,7 +3,6 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime
 
 from .customer import login_required
 from car_rental.db import db
@@ -66,13 +65,13 @@ def create(car_id):
     today_date = get_today_date()
     car = get_car(car_id)
     if request.method == 'POST':
-        start_date_str = request.form['start_date']
-        end_date_str = request.form['end_date']
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
         error = None
 
-        if not start_date_str:
+        if not start_date:
             error = 'Start date is required.'
-        if not end_date_str:
+        if not end_date:
             error = 'End date is required.'
 
         if error is not None:
@@ -83,8 +82,8 @@ def create(car_id):
             new_booking = Booking(
                 car_id=car_id,
                 customer_id=customer_id,
-                start_date=datetime.strptime(start_date_str, '%Y-%m-%d'),
-                end_date=datetime.strptime(end_date_str, '%Y-%m-%d')
+                start_date=start_date,
+                end_date=end_date
             )
 
             db.session.add(new_booking)
@@ -123,15 +122,15 @@ def update(id):
     if request.method == 'POST':
         if 'update' in request.form:
             car_id = request.form['car_id']
-            start_date_str = request.form['start_date']
-            end_date_str = request.form['end_date']
+            start_date = request.form['start_date']
+            end_date = request.form['end_date']
         elif 'cancel' in request.form:
             return redirect(url_for('booking.my_bookings'))
         error = None
 
-        if not start_date_str:
+        if not start_date:
             error = 'Start date is required.'
-        if not end_date_str:
+        if not end_date:
             error = 'End date is required.'
 
         if error is not None:
@@ -140,8 +139,8 @@ def update(id):
             # Update the booking using SQLAlchemy
             db.session.query(Booking).filter_by(id=id).update({
                 'car_id': car_id,
-                'start_date': datetime.strptime(start_date_str, '%Y-%m-%d'),
-                'end_date': datetime.strptime(end_date_str, '%Y-%m-%d'),
+                'start_date': start_date,
+                'end_date': end_date,
             })
             db.session.commit()
             return redirect(url_for('booking.my_bookings'))

@@ -7,4 +7,4 @@ class Customer(db.Model):
     phone_number = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(255), default=0)
+    role = db.Column(db.Integer, default=0)
