@@ -47,26 +47,27 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-     # Welcome page
+    # Home page
     @app.route('/')
-    def welcome():
-        return render_template('welcome.html')
-
-    # a simple page that says hello
     @app.route('/wheels_on_rent/')
     def home():
         return render_template('home.html')
+
+  
+    @app.route('/wheels_on_rent/<string:page_name>')
+    def html_page(page_name):
+        return render_template(f'{page_name}.html')
 
     from . import db
     db.init_app(app)
 
     from .views import customer
-    app.register_blueprint(customer.bp)
+    app.register_blueprint(customer.customer_bp)
 
     from .views import booking
-    app.register_blueprint(booking.bp)
+    app.register_blueprint(booking.booking_bp)
 
     from .views import car
-    app.register_blueprint(car.bp)
+    app.register_blueprint(car.car_bp)
 
     return app
