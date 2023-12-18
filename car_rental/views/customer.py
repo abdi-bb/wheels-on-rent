@@ -10,13 +10,12 @@ from car_rental.db import db
 from car_rental.models.booking import Booking
 from car_rental.models.car import Car
 from car_rental.models.customer import Customer
+from car_rental.views.auth import login_required
 
-bp = Blueprint('customer', __name__, url_prefix='/wheels_on_rent/customer')
-
-# Customer register control
+from . import customer_bp
 
 
-@bp.route('/register', methods=('GET', 'POST'))
+@customer_bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
         name = request.form['name']
@@ -58,9 +57,17 @@ def register():
 
     return render_template('customer/login.html')
 
+@customer_bp.route('/')
+@login_required
+def index():
+    customers = Customer.query.filter_by(role=0).order_by(Customer.name.asc()).all()
+
+    return render_template('admin/customer_index.html', customers=customers)
+
+
 
 # Customer login control
-@bp.route('/login', methods=('GET', 'POST'))
+@customer_bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -83,59 +90,11 @@ def login():
 
     return render_template('customer/login.html')
 
-# Getting customer id that was previously stored during login
-@bp.before_app_request
-def load_logged_in_customer():
-    customer_id = session.get('customer_id')
 
-    if customer_id is None:
-        g.customer = None
-    else:
-        g.customer = Customer.query.get(customer_id)
-
-
-# logging out a customer by clearing customer id from the session
-@bp.route('/logout')
-def logout():
-    # Clear the user's session data
-    session.pop('customer_id', None)
-    return redirect(url_for('home'))
-
-
-# Use the after_request decorator to add a response header
-@bp.after_request
-def add_header(response):
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
-
-
-# login_required decorator for login requirin views
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.customer is None:
-            return redirect(url_for('customer.login'))
-
-        return view(**kwargs)
-
-    return wrapped_view
-
-
-## Admin control over customer ##
-# Customer index page
-@bp.route('/')
-@login_required
-def index():
-    # Query customers with role=0, ordered by name
-    customers = Customer.query.filter_by(role=0).order_by(Customer.name.asc()).all()
-
-    return render_template('admin/customer_index.html', customers=customers)
 
 
 # customer can be created by the logged in addmin
-@bp.route('/create', methods=('GET', 'POST'))
+@customer_bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
     if request.method == 'POST':
@@ -190,7 +149,7 @@ def get_customer(id, check_author=True):
     return customer
 
 # Update the customer
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+@customer_bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
     if request.method == 'POST':
@@ -236,7 +195,7 @@ def update(id):
     return render_template('customer/update.html')
 
 
-@bp.route('/edit_profile', methods=('GET', 'POST'))
+@customer_bp.route('/edit_profile', methods=('GET', 'POST'))
 @login_required
 def edit_profile():
     if request.method == 'POST':
@@ -279,7 +238,7 @@ def edit_profile():
 
 
 
-@bp.route('/<int:id>/delete', methods=('POST', 'DELETE',))
+@customer_bp.route('/<int:id>/delete', methods=('POST', 'DELETE',))
 @login_required
 def delete(id):
     get_customer(id)
@@ -297,7 +256,7 @@ def delete(id):
 
 
 # Admin Home(Dashboard)
-@bp.route('/admin_dashboard')
+@customer_bp.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
     # Count records in each table using SQLAlchemy
