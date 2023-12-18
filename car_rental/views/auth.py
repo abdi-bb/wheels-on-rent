@@ -1,4 +1,3 @@
-# Getting customer id that was previously stored during login
 import functools
 from flask import g, redirect, session, url_for
 
@@ -16,10 +15,8 @@ def load_logged_in_customer():
         g.customer = Customer.query.get(customer_id)
 
 
-# logging out a customer by clearing customer id from the session
 @customer_bp.route('/logout')
 def logout():
-    # Clear the user's session data
     session.pop('customer_id', None)
     return redirect(url_for('home'))
 
