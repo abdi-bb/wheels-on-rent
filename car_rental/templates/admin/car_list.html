@@ -1,7 +1,29 @@
-{% extends 'admin/admin_base.html' %}
+{% extends 'admin/base.html' %}
 
 {% block content %}
 <div class="content-wrapper">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-dismissible fade show {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% else %}{{ category }}{% endif %}" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function () {
+                    document.querySelectorAll('.alert').forEach(function(alert) {
+                        alert.style.display = 'none';
+                    });
+                }, 2000); // Adjust the time in milliseconds (2000ms = 2 seconds)
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+
   <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
@@ -42,7 +64,7 @@
                   <td>{{ car.seat }}</td>
                   <td>{{ car.gearbox }}</td>
 		  <td>{{ car.price }}</td>
-                  <td><a class="btn btn-primary" href="{{ url_for('car.update', id=car['id']) }}">Edit</a></td>
+                  <td><a class="btn btn-primary" href="{{ url_for('car.update', id=car['id']) }}">Update</a></td>
                   <td>
                     <form action="{{ url_for('car.delete', id=car['id']) }}" method="post">
                       <input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?')">

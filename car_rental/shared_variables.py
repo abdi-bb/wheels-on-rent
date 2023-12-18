@@ -2,7 +2,6 @@
 Module: shared_variables
 '''
 import datetime
-from datetime import date
 
 
 def get_greeting():
@@ -18,8 +17,3 @@ def get_greeting():
         return "Good Evening!"
     else:
         return "Welcome!"
-
-
-def get_today_date():
-    '''Returns the date of today'''
-    return date.today()
