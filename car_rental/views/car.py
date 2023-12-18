@@ -108,15 +108,13 @@ def update(id):
         if error is not None:
             flash(error)
         else:
-            db.session.query(Car).filter_by(id=id).update({
-                'name': name,
-                'model': model,
-                'status': status,
-                'seat': seat,
-                'door': door,
-                'gearbox': gearbox,
-                'price': price
-            })
+            car.name = name,
+            car.model = model,
+            car.status = status,
+            car.seat = seat,
+            car.door = door,
+            car.gearbox = gearbox,
+            car.price = price
 
             if image and allowed_file(image.filename):
                 image_data = image.read()
