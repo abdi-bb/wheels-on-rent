@@ -4,7 +4,7 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-from .customer import login_required
+from .user import login_required
 from car_rental.db import db
 from car_rental.models.car import Car
 from car_rental.shared_variables import get_greeting

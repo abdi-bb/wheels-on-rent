@@ -5,7 +5,7 @@ import datetime
 
 
 def get_greeting():
-    '''Say your Customer Good Morning/Good Afternoon/Good Eveninig'''
+    '''Say User Good Morning/Good Afternoon/Good Eveninig'''
     current_time = datetime.datetime.now()
     hour = current_time.hour
 

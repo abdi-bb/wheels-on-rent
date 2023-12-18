@@ -61,8 +61,8 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from .views import customer
-    app.register_blueprint(customer.customer_bp)
+    from .views import user
+    app.register_blueprint(user.user_bp)
 
     from .views import booking
     app.register_blueprint(booking.booking_bp)
