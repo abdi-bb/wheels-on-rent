@@ -1,6 +1,6 @@
 import os
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for,current_app
+    flash, redirect, render_template, request, url_for,current_app
 )
 from werkzeug.exceptions import abort
 
@@ -71,7 +71,7 @@ def create():
 @login_required
 def index():
     cars = Car.query.order_by(Car.name.asc()).all()
-    return render_template('admin/car_index.html', cars=cars)
+    return render_template('admin/car_list.html', cars=cars)
 
 
 @car_bp.route('/<int:id>/update', methods=('GET', 'POST'))

@@ -130,7 +130,7 @@ def index():
         Booking.end_date
     ).order_by(Booking.start_date.asc()).all()
 
-    return render_template('admin/booking_index.html', bookings=bookings)
+    return render_template('admin/booking_list.html', bookings=bookings)
 
 
 

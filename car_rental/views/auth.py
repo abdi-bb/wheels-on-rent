@@ -1,11 +1,12 @@
 import functools
-from flask import g, redirect, session, url_for
+from flask import flash, g, redirect, render_template, request, session, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from car_rental.models.customer import Customer
-from . import customer_bp
+from . import auth_bp
 
 
-@customer_bp.before_app_request
+@auth_bp.before_app_request
 def load_logged_in_customer():
     customer_id = session.get('customer_id')
 
@@ -15,14 +16,9 @@ def load_logged_in_customer():
         g.customer = Customer.query.get(customer_id)
 
 
-@customer_bp.route('/logout')
-def logout():
-    session.pop('customer_id', None)
-    return redirect(url_for('home'))
-
 
 # Use the after_request decorator to add a response header
-@customer_bp.after_request
+@auth_bp.after_request
 def add_header(response):
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
@@ -36,8 +32,38 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.customer is None:
-            return redirect(url_for('customer.login'))
+            return redirect(url_for('auth.login'))
 
         return view(**kwargs)
 
     return wrapped_view
+
+# Customer login control
+@auth_bp.route('/login', methods=('GET', 'POST'))
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        error = None
+        
+        customer = Customer.query.filter_by(email=email).first()
+
+        if customer is None or not check_password_hash(customer.password, password):
+            error = 'Incorrect email or password, please try again!'
+            
+        if error is None:
+            session.clear()
+            session['customer_id'] = customer.id
+            if customer.role == 1:
+                return redirect(url_for('customer.admin_dashboard'))
+            return redirect(url_for('car.available'))
+
+        flash(error, 'error')
+
+    return render_template('auth/login.html')
+
+
+@auth_bp.route('/logout')
+def logout():
+    session.pop('customer_id', None)
+    return redirect(url_for('home'))
