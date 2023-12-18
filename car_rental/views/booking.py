@@ -92,11 +92,9 @@ def update(id):
         if error is not None:
             flash(error)
         else:
-            db.session.query(Booking).filter_by(id=id).update({
-                'car_id': car_id,
-                'start_date': start_date,
-                'end_date': end_date,
-            })
+            booking.car_id = car_id,
+            booking.start_date = start_date,
+            booking.end_date = end_date,
             db.session.commit()
             return redirect(url_for('booking.my_bookings'))
         
