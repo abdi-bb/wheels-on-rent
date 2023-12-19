@@ -2,18 +2,18 @@ import functools
 from flask import flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from car_rental.models.customer import Customer
+from car_rental.models.user import User
 from . import auth_bp
 
 
 @auth_bp.before_app_request
-def load_logged_in_customer():
-    customer_id = session.get('customer_id')
+def load_logged_in_user():
+    user_id = session.get('user_id')
 
-    if customer_id is None:
-        g.customer = None
+    if user_id is None:
+        g.user = None
     else:
-        g.customer = Customer.query.get(customer_id)
+        g.user = User.query.get(user_id)
 
 
 
@@ -31,14 +31,14 @@ def add_header(response):
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.customer is None:
+        if g.user is None:
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)
 
     return wrapped_view
 
-# Customer login control
+# User login control
 @auth_bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
@@ -46,16 +46,16 @@ def login():
         password = request.form['password']
         error = None
         
-        customer = Customer.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-        if customer is None or not check_password_hash(customer.password, password):
+        if user is None or not check_password_hash(user.password, password):
             error = 'Incorrect email or password, please try again!'
             
         if error is None:
             session.clear()
-            session['customer_id'] = customer.id
-            if customer.role == 1:
-                return redirect(url_for('customer.admin_dashboard'))
+            session['user_id'] = user.id
+            if user.role == 1:
+                return redirect(url_for('user.admin_dashboard'))
             return redirect(url_for('car.available'))
 
         flash(error, 'error')
@@ -65,5 +65,5 @@ def login():
 
 @auth_bp.route('/logout')
 def logout():
-    session.pop('customer_id', None)
+    session.pop('user_id', None)
     return redirect(url_for('home'))

@@ -2,6 +2,29 @@
 
 {% block content %}
 <div class="container">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-dismissible fade show {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% else %}{{ category }}{% endif %}" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function () {
+                    document.querySelectorAll('.alert').forEach(function(alert) {
+                        alert.style.display = 'none';
+                    });
+                }, 4000); // Adjust the time in milliseconds (2000ms = 2 seconds)
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+
     <h1 class="text-3xl font-semibold mb-4 text-center">Available Cars for Rent</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for car in cars %}

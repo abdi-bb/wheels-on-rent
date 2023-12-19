@@ -34,10 +34,11 @@
 	    <script>
                 setTimeout(function () {
                     document.querySelector(".alert").style.display = "none";
-                }, 2000); // Adjust the time in milliseconds (5000ms = 5 seconds)
+                }, 4000); // Adjust the time in milliseconds (5000ms = 5 seconds)
             </script>
         {% endif %}
     {% endwith %}
+
     <body>
         <div class="login">
             <div class="login__content">
@@ -69,7 +70,7 @@
                         </div>
                     </form>
 
-                    <form action="{{ url_for('customer.register') }}" method="post" class="login__create none" id="login-up">
+                    <form action="{{ url_for('user.register') }}" method="post" class="login__create none" id="login-up">
                         <h1 class="login__title">Create Account</h1>
     
                         <div class="login__box">

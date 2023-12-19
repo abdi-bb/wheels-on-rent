@@ -1,0 +1,95 @@
+{% extends 'admin/base.html' %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-dismissible fade show {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% else %}{{ category }}{% endif %}" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function () {
+                    document.querySelectorAll('.alert').forEach(function(alert) {
+                        alert.style.display = 'none';
+                    });
+                }, 4000); // Adjust the time in milliseconds (2000ms = 2 seconds)
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-lg-9 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Staff Members</h4>
+        </p>
+        <div class="mb-3">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search staff members...">
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Last Name</th>
+                <th>Email Address</th>
+                <th>Phone Number</th>
+                <th>Manage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for staff_member in staff_list %}
+              <tr>
+                <td>{{ staff_member.name }}</td>
+                <td>{{ staff_member.last_name }}</td>
+                <td>{{ staff_member.email }}</td>
+                <td>{{ staff_member.phone_number }}</td>
+                <td>
+                  <form action="{{ url_for('user.upgrade_user', id=staff_member.id) }}" method="post">
+                    <input class="btn btn-danger" type="submit" value="Downgrade" onclick="return confirm('Are you sure?')">
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const table = document.querySelector('.table');
+  const rows = table.querySelectorAll('tbody tr');
+
+  searchInput.addEventListener('input', function () {
+    const searchTerm = searchInput.value.toLowerCase();
+    rows.forEach(row => {
+      const name = row.querySelector('td:first-child').textContent.toLowerCase();
+      const lastName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+      const phone = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+      if (name.includes(searchTerm) || lastName.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+</script>
+{% endblock %}

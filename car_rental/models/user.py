@@ -1,6 +1,6 @@
 from car_rental.db import db
 
-class Customer(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)

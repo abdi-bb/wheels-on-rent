@@ -3,7 +3,30 @@
 
 {% block content %}
   <div class="content-wrapper">
-    {% if g.customer['role'] == 1 %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-dismissible fade show {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% else %}{{ category }}{% endif %}" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function () {
+                    document.querySelectorAll('.alert').forEach(function(alert) {
+                        alert.style.display = 'none';
+                    });
+                }, 4000); // Adjust the time in milliseconds (2000ms = 2 seconds)
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+
+    {% if g.user.role == 1 %}
     <div class="row">
       <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
         <div class="card">
@@ -11,7 +34,26 @@
             <div class="row">
               <div class="col-9">
                 <div class="d-flex align-items-center align-self-start">
-                  <h3 class="mb-0">{{ customer_count }}</h3>
+                  <h3 class="mb-0">{{ staff_count }}</h3>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="icon icon-box-info">
+                  <span class="mdi mdi-account icon-item"></span>
+                </div>
+              </div>
+            </div>
+            <h6 class="text-muted font-weight-normal">Staff Members</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-9">
+                <div class="d-flex align-items-center align-self-start">
+                  <h3 class="mb-0">{{ user_count }}</h3>
                 </div>
               </div>
               <div class="col-3">

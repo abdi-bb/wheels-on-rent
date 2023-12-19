@@ -1,12 +1,12 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    flash, g, redirect, render_template, request, url_for
 )
 
-from .customer import login_required
+from .user import login_required
 from car_rental.db import db
 from car_rental.models.booking import Booking
 from car_rental.models.car import Car
-from car_rental.models.customer import Customer
+from car_rental.models.user import User
 from car_rental.shared_variables import get_greeting
 from datetime import date
 
@@ -31,11 +31,11 @@ def create(car_id):
         if error is not None:
             flash(error)
         else:
-            customer_id = g.customer.id
+            user_id = g.user.id
 
             new_booking = Booking(
                 car_id=car_id,
-                customer_id=customer_id,
+                user_id=user_id,
                 start_date=start_date,
                 end_date=end_date
             )
@@ -52,17 +52,17 @@ def create(car_id):
 @login_required
 def my_bookings():
     greeting = get_greeting()
-    customer_id = g.customer.id
+    user_id = g.user.id
 
-    bookings = Booking.query.join(Customer).join(Car).filter(
-        Booking.customer_id == customer_id
+    bookings = Booking.query.join(User).join(Car).filter(
+        Booking.user_id == user_id
     ).with_entities(
         Booking.id,
         Car.id.label('car_id'),
         Car.name.label('car_name'),
-        Customer.id.label('customer_id'),
-        Customer.name.label('customer_name'),
-        Customer.last_name,
+        User.id.label('user_id'),
+        User.name.label('customer_name'),
+        User.last_name,
         Booking.start_date,
         Booking.end_date
     ).order_by(Booking.start_date.asc()).all()
@@ -109,7 +109,7 @@ def delete(id):
     
     Car.query.filter_by(id=car_id).update({'status': 1})
     db.session.commit()
-    if g.customer.role == 1:
+    if g.user.role == 1:
         return redirect(url_for('booking.index'))
     return redirect(url_for('booking.my_bookings'))
 
@@ -119,11 +119,11 @@ def delete(id):
 @booking_bp.route('/')
 @login_required
 def index():
-    bookings = Booking.query.join(Customer).join(Car).with_entities(
+    bookings = Booking.query.join(User).join(Car).with_entities(
         Booking.id,
         Car.name.label('car_name'),
-        Customer.name.label('customer_name'),
-        Customer.last_name,
+        User.name.label('customer_name'),
+        User.last_name,
         Booking.start_date,
         Booking.end_date
     ).order_by(Booking.start_date.asc()).all()
@@ -135,13 +135,13 @@ def index():
 # # Getting booking with the same booking id
 # def get_booking(id, check_author=True):
 #      # Use SQLAlchemy queries to fetch the booking
-#     booking = Booking.query.join(Customer).join(Car).filter(Booking.id == id).first()
+#     booking = Booking.query.join(User).join(Car).filter(Booking.id == id).first()
 
 #     if booking is None:
 #         abort(404, f"Booking id {id} doesn't exist.")
 
 #     # Check if the user is an admin (role == 1) or if the booking belongs to the user
-#     if g.customer.role == 1 or (check_author and booking.customer_id == g.customer.id):
+#     if g.user.role == 1 or (check_author and booking.user_id == g.user.id):
 #         return booking
 #     else:
 #         abort(403)

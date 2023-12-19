@@ -4,6 +4,7 @@
 <!--<div class="container">
 <h1 class="text-3xl font-semibold mb-4 text-center">Available Cars for Rent</h1>-->
 <div class="container mx-auto px-4 mt-10 md:px-8 lg:px-16 xl:px-24">
+
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -20,7 +21,7 @@
                     document.querySelectorAll('.alert').forEach(function(alert) {
                         alert.style.display = 'none';
                     });
-                }, 2000); // Adjust the time in milliseconds (2000ms = 2 seconds)
+                }, 4000); // Adjust the time in milliseconds (2000ms = 2 seconds)
             });
         </script>
     {% endif %}

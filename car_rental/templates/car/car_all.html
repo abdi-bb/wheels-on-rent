@@ -1,7 +1,7 @@
 {% extends 'admin/admin_base.html' %}
 
 {% block content %}
-{% if g.customer and g.customer['role'] == 1 %}
+{% if g.user and g.user['role'] == 1 %}
 
 
 
@@ -12,7 +12,7 @@
       <th>Seats</th>
       <th>Transmission</th>
       <th>Image</th>
-      {% if g.customer and g.customer['role'] == 1 %}
+      {% if g.user and g.user['role'] == 1 %}
         <th>Edit</th>
         <th>Delete</th>
       {% endif %}
@@ -27,7 +27,7 @@
         <td>
           <img src="{{ car.image }}" alt="{{ car.name }} Image" width="100">
         </td>
-        {% if g.customer and g.customer['role'] == 1 %}
+        {% if g.user and g.user['role'] == 1 %}
           <td><a class="update" href="{{ url_for('car.update', id=car['id']) }}">Edit</a></td>
           <td>
             <form action="{{ url_for('car.delete', id=car['id']) }}" method="post">
