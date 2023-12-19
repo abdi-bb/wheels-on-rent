@@ -4,39 +4,77 @@
 <div class="container mx-auto px-4 mt-10 md:px-8 lg:px-16 xl:px-24">
     <h1 class="text-2xl font-semibold mb-3 border-b pb-4 lg:text-left" style="display: flex; justify-content: center;">Book Your Car</h1>
 
+
+    <div class="mt-4 mb-4">
+        <a href="{{ url_for('car.available') }}" class="py-4 px-1 text-lg text-blue-700 transition duration-300">
+            Back to available cars
+        </a>
+    </div>
+    
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-md mb-4 text-xl">
+        Free cancellation up to 48 hours before pick-up.
+    </div>
+    
     <div class="md:flex md:space-x-4">
-        <div class="md:w-1/2">
-            <div class="bg-white rounded-lg overflow-hidden border border-gray-300 p-5">
-                <img src="{{ url_for('uploaded_image', car_id=car.id) }}" class="w-full h-auto" alt="{{ car.name }} Image">
+        <div class="md:w-4/5">
+            <div class="bg-white rounded-lg overflow-hidden border border-gray-300 p-5 flex items-center">
+                <img src="{{ url_for('uploaded_image', car_id=car.id) }}" class="w-96 h-auto" alt="{{ car.name }} Image">
+                <div class="ml-4">
+                    <h2 class="text-2xl mb-2 font-semibold">{{ car.name }} ({{ car.model }})</h2>
+                    <p class="text-gray-600 flex items-center mb-3 text-xl">
+                        <img src="{{ url_for('static', filename='assets/icons/user.png') }}" alt="Seat" class="h-6 w-6 mr-2"> {{ car.seat }} seats
+                    </p>
+                    <p class="text-gray-600 flex items-center mb-3 text-xl">
+                        <img src="{{ url_for('static', filename='assets/icons/manual-transmission.png') }}" alt="Gear" class="h-6 w-6 mr-2"> {{ car.gearbox }}
+                    </p>
+                    <p class="text-gray-600 flex items-center mb-3 text-xl">
+                        <img src="{{ url_for('static', filename='assets/icons/coin.png') }}" alt="Price" class="h-6 w-6 mr-2"> {{ car.price }}/per day
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="md:w-1/2 mt-0 md:mt-0">
-            <div class="bg-white rounded-lg overflow-hidden p-4 border border-gray-300">
-                <h2 class="text-2xl mb-2 font-semibold">{{ car.name }}</h2>
-                <p class="text-gray-600">
-                    <strong>Model:</strong> {{ car.model }}<br>
-                    <strong>Seats:</strong> {{ car.seat }}<br>
-                    <strong>Gearbox:</strong> {{ car.gearbox }}<br>
-		    <strong>Price per Day:</strong> {{ car.price }}<br>
-                </p>
-                <form class="mt-5" action="{{ url_for('booking.create', car_id=car.id) }}" method="POST">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="start_date">
-                            Start Date
-                        </label>
-                        <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="start_date" name="start_date" type="date" value="{{ today_date }}" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="end_date">
-                            End Date
-                        </label>
-                        <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="end_date" name="end_date" type="date" required>
-                    </div>
-                    <div class="mb-4">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded inline-block w-full">Book Now</button>
-                    </div>
-                </form>
+        
+
+        <div class="md:w-1/2">
+            <div class="bg-white rounded-lg overflow-hidden border border-gray-300 p-5">
+                <h2 class="text-2xl mb-4 font-bold">Pick-up and Drop-off Information</h2>
+        
+                <div class="flex items-center mb-3">
+                    <p class="text-gray-700 text-xl"><span class="">Bole International Airport, Addis Ababa.</span></p>
+                </div>
+
+                <div class="flex  justify-center mb-3 flex-col">
+                    <svg class="w-6 h-6 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"></path></svg>
+                    <svg class="w-6 h-6 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"></path></svg>
+                </div>
+        
+                <div class="flex items-center">
+                    <p class="text-gray-700 text-xl"><span class="">Bole International Airport, Addis Ababa.</span></p>
+                </div>
             </div>
+        </div>
+        
+    </div>
+    <div class="md:w-1/2 mt-0 md:mt-0">
+        <div class="bg-white rounded-lg overflow-hidden p-4 border border-gray-300">
+            
+            <form class="mt-5" action="{{ url_for('booking.create', car_id=car.id) }}" method="POST">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="start_date">
+                        Start Date
+                    </label>
+                    <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="start_date" name="start_date" type="date" value="{{ today_date }}" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="end_date">
+                        End Date
+                    </label>
+                    <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="end_date" name="end_date" type="date" required>
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded inline-block w-full">Book Now</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
