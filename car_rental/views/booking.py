@@ -7,8 +7,8 @@ from car_rental.db import db
 from car_rental.models.booking import Booking
 from car_rental.models.car import Car
 from car_rental.models.user import User
-from car_rental.shared_variables import get_greeting
-from datetime import date, datetime
+from car_rental.shared_variables import calculate_total_price, get_greeting
+from datetime import date
 
 from . import booking_bp
 
@@ -56,22 +56,6 @@ def create(car_id):
 
     return render_template('booking/create.html', today_date=today_date, car=car)
 
-
-def calculate_total_price(daily_price, start_date, end_date):
-    try:
-        start_date_obj = date.fromisoformat(start_date)
-        end_date_obj = date.fromisoformat(end_date)
-
-        duration_days = (end_date_obj - start_date_obj).days
-
-        daily_price = float(daily_price)
-
-        total_price = daily_price * duration_days
-
-        return total_price
-    except Exception as e:
-        print(f"Error calculating total price: {e}")
-        return 0
 
 @booking_bp.route('/my_bookings')
 @login_required
