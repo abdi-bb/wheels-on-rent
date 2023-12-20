@@ -7,17 +7,20 @@
         <script src="https://unpkg.com/htmx.org@1.9.5/dist/htmx.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <title>WheelsOnRent</title>
-	<link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/WheelsOnRent.png')}}" />
+	    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/racing.png')}}" />
         <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
         <script src="https://kit.fontawesome.com/bae88a6e1d.js" crossorigin="anonymous"></script>
+        <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+
     </head>
 <body class="relative min-h-screen">
   <!-- Navbar -->
 <nav class="navbar navbar-light bg-light justify-content-between p-3 pl-5">
   <a class="text-2xl font-bold flex items-center" href="{{ url_for('car.available') }}" style="text-decoration: none;">
-    <img src="{{ url_for('static', filename='assets/img/WheelsOnRent.png') }}" class="h-10 w-10">
+    <img src="{{ url_for('static', filename='assets/img/racing.png') }}" class="h-10 w-10">
     <span class="hidden md:inline">WheelsOnRent</span>
 </a>
   {% if g.user['role'] == 0 %}
@@ -67,7 +70,7 @@
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-center">
                 <a class="text-2xl font-bold flex items-center" href="{{ url_for('html_page', page_name='') }}" style="text-decoration: none;">
-                    <img src="{{ url_for('static', filename='assets/img/WheelsOnRent.png') }}" alt="Company Logo" class="h-10 w-10 mr-2">
+                    <img src="{{ url_for('static', filename='assets/img/racing.png') }}" alt="Company Logo" class="h-10 w-10 mr-2">
                 </a>
             </div>
     
@@ -100,5 +103,50 @@
             </div>
         </div>
     </footer>
+    <script>
+        function downloadPDF() {
+            const contentLoaded = new Promise((resolve) => {
+                const images = document.querySelectorAll('#receipt-container img');
+                const totalImages = images.length;
+                let loadedImages = 0;
+    
+                if (totalImages === 0) {
+                    resolve();
+                }
+    
+                images.forEach((image) => {
+                    image.onload = () => {
+                        loadedImages += 1;
+                        if (loadedImages === totalImages) {
+                            resolve();
+                        }
+                    };
+                });
+            });
+    
+            contentLoaded.then(() => {
+                const element = document.getElementById('receipt-container');
+    
+                if (!element) {
+                    console.error('Element with id "receipt-container" not found.');
+                    return;
+                }
+    
+                try {
+                    html2pdf(element, {
+                        margin: 10,
+                        filename: 'receipt.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        exclude: ['#excludeButton']
+                    });
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                    alert('Error generating PDF. Please try again.');
+                }
+            });
+        }
+    </script>
+    
+    
     </body>
 </html>
