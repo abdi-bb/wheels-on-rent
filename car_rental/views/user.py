@@ -22,25 +22,24 @@ def register():
         password = request.form['password']
         error = None
 
-        if not name:
-            error = 'Name is required.'
-        elif not last_name:
-            error = 'Last Name is required.'
-        elif not phone_number:
-            error = 'Phone Number is required.'
-        elif not email:
-            error = 'Email is required.'
-        elif not password:
-            error = 'Password is required.'
+        error = (
+                'All fields are required.'
+                if not (name or last_name or phone_number or email or password)
+                else None
+            )
 
         if error is None:
             try:
+                user_count = User.query.count()
+                
                 new_user = User(
                     name=name,
                     last_name=last_name,
                     phone_number=phone_number,
                     email=email,
+                    role=1 if user_count < 1 else 0,
                     password=generate_password_hash(password)
+                    
                 )
                 db.session.add(new_user)
                 db.session.commit()
@@ -53,6 +52,7 @@ def register():
         flash(error, 'error')
 
     return render_template('auth/login.html')
+
 
 @user_bp.route('/')
 @login_required
@@ -161,7 +161,7 @@ def staff_members():
 def admin_dashboard():
     staff_count = User.query.filter_by(role=1).count()
     car_count = Car.query.count()
-    user_count = User.query.count()
+    user_count = User.query.filter(User.role != 1).count()
     booking_count = Booking.query.count()
 
     return render_template('admin/dashboard.html',
