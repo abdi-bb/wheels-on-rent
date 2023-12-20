@@ -12,6 +12,9 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
         <script src="https://kit.fontawesome.com/bae88a6e1d.js" crossorigin="anonymous"></script>
+        <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+
     </head>
 <body class="relative min-h-screen">
   <!-- Navbar -->
@@ -100,5 +103,53 @@
             </div>
         </div>
     </footer>
+    <script>
+        function downloadPDF() {
+            // Promise to wait for content to load
+            const contentLoaded = new Promise((resolve) => {
+                const images = document.querySelectorAll('#receipt-container img');
+                const totalImages = images.length;
+                let loadedImages = 0;
+    
+                if (totalImages === 0) {
+                    resolve();
+                }
+    
+                images.forEach((image) => {
+                    image.onload = () => {
+                        loadedImages += 1;
+                        if (loadedImages === totalImages) {
+                            resolve();
+                        }
+                    };
+                });
+            });
+    
+            // Wait for content to load before generating PDF
+            contentLoaded.then(() => {
+                const element = document.getElementById('receipt-container');
+    
+                if (!element) {
+                    console.error('Element with id "receipt-container" not found.');
+                    return;
+                }
+    
+                try {
+                    html2pdf(element, {
+                        margin: 10,
+                        filename: 'receipt.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        exclude: ['#excludeButton']
+                        // Add the ID of the button or element you want to exclude
+                    });
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                    alert('Error generating PDF. Please try again.');
+                }
+            });
+        }
+    </script>
+    
+    
     </body>
 </html>
