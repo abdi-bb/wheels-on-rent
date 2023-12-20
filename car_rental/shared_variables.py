@@ -1,7 +1,7 @@
 '''
 Module: shared_variables
 '''
-import datetime
+from datetime import date, datetime
 
 
 def get_greeting():
@@ -17,3 +17,19 @@ def get_greeting():
         return "Good Evening!"
     else:
         return "Welcome!"
+    
+def calculate_total_price(daily_price, start_date, end_date):
+    try:
+        start_date_obj = date.fromisoformat(start_date)
+        end_date_obj = date.fromisoformat(end_date)
+
+        duration_days = (end_date_obj - start_date_obj).days
+
+        daily_price = float(daily_price)
+
+        total_price = daily_price * duration_days
+
+        return total_price
+    except Exception as e:
+        print(f"Error calculating total price: {e}")
+        return 0

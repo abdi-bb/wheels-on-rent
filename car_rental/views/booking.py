@@ -7,7 +7,7 @@ from car_rental.db import db
 from car_rental.models.booking import Booking
 from car_rental.models.car import Car
 from car_rental.models.user import User
-from car_rental.shared_variables import get_greeting
+from car_rental.shared_variables import get_greeting, calculate_total_price
 from datetime import date, datetime
 
 from . import booking_bp
@@ -57,21 +57,6 @@ def create(car_id):
     return render_template('booking/create.html', today_date=today_date, car=car)
 
 
-def calculate_total_price(daily_price, start_date, end_date):
-    try:
-        start_date_obj = date.fromisoformat(start_date)
-        end_date_obj = date.fromisoformat(end_date)
-
-        duration_days = (end_date_obj - start_date_obj).days
-
-        daily_price = float(daily_price)
-
-        total_price = daily_price * duration_days
-
-        return total_price
-    except Exception as e:
-        print(f"Error calculating total price: {e}")
-        return 0
 
 @booking_bp.route('/my_bookings')
 @login_required
@@ -94,7 +79,6 @@ def my_bookings():
 
     return render_template('booking/index.html', greeting=greeting, bookings=bookings)
 
-
 @booking_bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
@@ -103,7 +87,7 @@ def update(id):
 
     if request.method == 'POST':
         if 'update' in request.form:
-            new_car_id = request.form['car_id']
+            car_id = request.form['car_id']
             start_date = request.form['start_date']
             end_date = request.form['end_date']
         elif 'cancel' in request.form:
@@ -118,20 +102,15 @@ def update(id):
         if error is not None:
             flash(error)
         else:
-            old_car_id = booking.car_id
-            
-            booking.car_id = new_car_id,
+            booking.car_id = car_id,
             booking.start_date = start_date,
             booking.end_date = end_date,
             db.session.commit()
-            if old_car_id != new_car_id:
-                Car.query.filter_by(id=old_car_id).update({'status': 1})
-                Car.query.filter_by(id=new_car_id).update({'status': 0})
-                db.session.commit()
             return redirect(url_for('booking.my_bookings'))
+
+            
         
     return render_template('booking/update.html', booking=booking, cars=cars)
-
 
 @booking_bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
