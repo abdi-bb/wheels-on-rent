@@ -105,7 +105,6 @@
     </footer>
     <script>
         function downloadPDF() {
-            // Promise to wait for content to load
             const contentLoaded = new Promise((resolve) => {
                 const images = document.querySelectorAll('#receipt-container img');
                 const totalImages = images.length;
@@ -125,7 +124,6 @@
                 });
             });
     
-            // Wait for content to load before generating PDF
             contentLoaded.then(() => {
                 const element = document.getElementById('receipt-container');
     
@@ -140,7 +138,6 @@
                         filename: 'receipt.pdf',
                         image: { type: 'jpeg', quality: 0.98 },
                         exclude: ['#excludeButton']
-                        // Add the ID of the button or element you want to exclude
                     });
                 } catch (error) {
                     console.error('Error generating PDF:', error);
