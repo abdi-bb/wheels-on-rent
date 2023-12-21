@@ -1,5 +1,6 @@
 import os
 from flask import Flask, send_from_directory, url_for, send_file, Response, render_template, redirect
+from flask_login import LoginManager
 
 from car_rental.models.car import Car
 
@@ -60,6 +61,17 @@ def create_app(test_config=None):
 
     from . import db
     db.init_app(app)
+    
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+
+    from .models.user import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        # since the user_id is just the primary key of our user table, use it in the query for the user
+        return User.query.get(int(user_id))
 
     from .views import user
     app.register_blueprint(user.user_bp)

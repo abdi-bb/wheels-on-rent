@@ -26,7 +26,7 @@
     {% endif %}
 {% endwith %}
 
-    {% if g.user.role == 1 %}
+{% if current_user.is_authenticated and current_user.role == 1 %}
     <div class="row">
       <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
         <div class="card">

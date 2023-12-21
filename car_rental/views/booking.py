@@ -1,6 +1,7 @@
 from flask import (
     flash, g, redirect, render_template, request, url_for
 )
+from flask_login import current_user
 
 from .user import login_required
 from car_rental.db import db
@@ -31,7 +32,7 @@ def create(car_id):
         if error is not None:
             flash(error)
         else:
-            user_id = g.user.id
+            user_id = current_user.id
 
             new_booking = Booking(
                 car_id=car_id,
@@ -45,8 +46,8 @@ def create(car_id):
            # flash('You have successfully booked your car!', 'success')
             #return redirect(url_for('booking.my_bookings'))
             receipt_data = {
-            'customer_name': g.user.name,
-            'customer_last': g.user.last_name,
+            'customer_name': current_user.name,
+            'customer_last': current_user.last_name,
             'car_name': car.name,
             'start_date': start_date,
             'end_date': end_date,
@@ -61,7 +62,7 @@ def create(car_id):
 @login_required
 def my_bookings():
     greeting = get_greeting()
-    user_id = g.user.id
+    user_id = current_user.id
 
     bookings = Booking.query.join(User).join(Car).filter(
         Booking.user_id == user_id
@@ -128,7 +129,7 @@ def delete(id):
     
     Car.query.filter_by(id=car_id).update({'status': 1})
     db.session.commit()
-    if g.user.role == 1:
+    if current_user.role == 1:
         return redirect(url_for('booking.index'))
     return redirect(url_for('booking.my_bookings'))
 
@@ -160,7 +161,7 @@ def index():
 #         abort(404, f"Booking id {id} doesn't exist.")
 
 #     # Check if the user is an admin (role == 1) or if the booking belongs to the user
-#     if g.user.role == 1 or (check_author and booking.user_id == g.user.id):
+#     if current_user.role == 1 or (check_author and bookincurrent_user_id == current_user.id):
 #         return booking
 #     else:
 #         abort(403)
