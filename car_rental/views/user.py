@@ -2,7 +2,7 @@ from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
 from flask_login import login_required
-from werkzeug.security import  generate_password_hash
+from werkzeug.security import  generate_password_hash, check_password_hash
 
 from car_rental.db import db
 from car_rental.models.booking import Booking
@@ -30,20 +30,21 @@ def update(id):
         last_name = request.form.get('last_name')
         phone_number = request.form.get('phone_number')
         email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        new_password = request.form.get('password')
+        confirm_new_password = request.form.get('confirm_password')
         error = None
 
         if not name or not last_name or not phone_number or not email:
             error = 'All fields are required.'
-        elif password != confirm_password:
+        elif new_password != confirm_new_password:
             error = 'Passwords do not match.'
         else:
             user.name = name
             user.last_name = last_name
             user.phone_number = phone_number
             user.email = email
-            user.password = generate_password_hash(password)
+            if new_password:
+                user.password = generate_password_hash(new_password)
 
             db.session.commit()
             flash('Profile updated successfully.', 'success')
