@@ -23,10 +23,10 @@
     <img src="{{ url_for('static', filename='assets/img/racing.png') }}" class="h-10 w-10">
     <span class="hidden md:inline">WheelsOnRent</span>
 </a>
-  {% if g.user['role'] == 0 %}
+{% if current_user.is_authenticated and current_user.role == 0 %}
   <div class="d-flex align-items-center">
                     <!-- Apply dropdown menu styling to greeting and name -->
-                    <p class="origin-top-right absolute right-16 p-2 bottom-4  mt-2 w-auto flex items-center justify-center rounded-md shadow-lg bg-primary text-white ring-1 ring-black ring-opacity-5 mb-0 d-none d-sm-block navbar-profile-name">{{ greeting }} {{ g.user['name'] }}</p>
+                    <p class="origin-top-right absolute right-16 p-2 bottom-4  mt-2 w-auto flex items-center justify-center rounded-md shadow-lg bg-primary text-white ring-1 ring-black ring-opacity-5 mb-0 d-none d-sm-block navbar-profile-name">{{ greeting }} {{ current_user.name }}</p>
    </div>
 
 
@@ -46,7 +46,7 @@
               <img src="{{ url_for('static', filename='assets/icons/manage.svg') }}" alt="My Icon" class="h-4 w-4 mr-2">
               <span>Manage Bookings</span>
             </a>
-            <a href="{{ url_for('user.update', id=g.user.id) }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" style="text-decoration: none;">
+            <a href="{{ url_for('user.update', id=current_user.id) }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" style="text-decoration: none;">
               <img src="{{ url_for('static', filename='assets/icons/account.svg') }}" alt="My Icon" class="h-4 w-4 mr-2">
               <span>Profile Settings</span>
             </a>

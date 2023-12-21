@@ -1,59 +1,29 @@
 import functools
 from flask import flash, g, redirect, render_template, request, session, url_for
+from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from car_rental.db import db
 
 from car_rental.models.user import User
 from . import auth_bp
 
 
-@auth_bp.before_app_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = User.query.get(user_id)
-
-
-
-# Use the after_request decorator to add a response header
-@auth_bp.after_request
-def add_header(response):
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
-
-
-
-# login_required decorator for login requiring views
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-
-        return view(**kwargs)
-
-    return wrapped_view
-
 # User login control
 @auth_bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = request.form.get('remember') == 'on'
         error = None
         
         user = User.query.filter_by(email=email).first()
 
-        if user is None or not check_password_hash(user.password, password):
+        if not user or not check_password_hash(user.password, password):
             error = 'Incorrect email or password, please try again!'
             
         if error is None:
-            session.clear()
-            session['user_id'] = user.id
+            login_user(user, remember=remember)
             if user.role == 1:
                 return redirect(url_for('user.admin_dashboard'))
             return redirect(url_for('car.available'))
@@ -63,7 +33,52 @@ def login():
     return render_template('auth/login.html')
 
 
+
+@auth_bp.route('/signup', methods=('GET', 'POST'))
+def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        last_name = request.form.get('last_name')
+        phone_number = request.form.get('phone_number')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        error = None
+
+        error = (
+                'All fields are required.'
+                if not (name or last_name or phone_number or email or password)
+                else None
+            )
+
+        if error is None:
+            try:
+                user_count = User.query.count()
+                
+                new_user = User(
+                    name=name,
+                    last_name=last_name,
+                    phone_number=phone_number,
+                    email=email,
+                    role=1 if user_count < 1 else 0,
+                    password=generate_password_hash(password)
+                    
+                )
+                db.session.add(new_user)
+                db.session.commit()
+                flash('You have registered successfully.', 'success')
+            except db.exc.IntegrityError:
+                error = f"Email {email} is already registered."
+            else:
+                return redirect(url_for("auth.login"))
+
+        flash(error, 'error')
+
+    return render_template('auth/login.html')
+
+
+
 @auth_bp.route('/logout')
+@login_required
 def logout():
-    session.pop('user_id', None)
+    logout_user()
     return redirect(url_for('home'))

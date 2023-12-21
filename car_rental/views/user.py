@@ -1,57 +1,15 @@
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
+from flask_login import login_required
 from werkzeug.security import  generate_password_hash
 
 from car_rental.db import db
 from car_rental.models.booking import Booking
 from car_rental.models.car import Car
 from car_rental.models.user import User
-from car_rental.views.auth import login_required
 
 from . import user_bp
-
-
-@user_bp.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        name = request.form['name']
-        last_name = request.form['last_name']
-        phone_number = request.form['phone_number']
-        email = request.form['email']
-        password = request.form['password']
-        error = None
-
-        error = (
-                'All fields are required.'
-                if not (name or last_name or phone_number or email or password)
-                else None
-            )
-
-        if error is None:
-            try:
-                user_count = User.query.count()
-                
-                new_user = User(
-                    name=name,
-                    last_name=last_name,
-                    phone_number=phone_number,
-                    email=email,
-                    role=1 if user_count < 1 else 0,
-                    password=generate_password_hash(password)
-                    
-                )
-                db.session.add(new_user)
-                db.session.commit()
-                flash('You have registered successfully.', 'success')
-            except db.exc.IntegrityError:
-                error = f"Email {email} is already registered."
-            else:
-                return redirect(url_for("auth.login"))
-
-        flash(error, 'error')
-
-    return render_template('auth/login.html')
 
 
 @user_bp.route('/')
@@ -68,12 +26,12 @@ def update(id):
     user = User.query.get_or_404(id)
 
     if request.method == 'POST':
-        name = request.form['name']
-        last_name = request.form['last_name']
-        phone_number = request.form['phone_number']
-        email = request.form['email']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
+        name = request.form.get('name')
+        last_name = request.form.get('last_name')
+        phone_number = request.form.get('phone_number')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
         error = None
 
         if not name or not last_name or not phone_number or not email:

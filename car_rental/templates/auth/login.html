@@ -61,6 +61,10 @@
                             <input type="password" name="password" placeholder="Password" class="login__input">
                         </div>
 
+                        <div class="login__box">
+                            <input type="checkbox" name="remember"> Remember me
+                        </div>
+
                         <a href="#" class="login__forgot">Forgot password?</a>
 
                         <input type="submit" class="login__button" value="Sign In">
@@ -71,7 +75,7 @@
                         </div>
                     </form>
 
-                    <form action="{{ url_for('user.register') }}" method="post" class="login__create none" id="login-up">
+                    <form action="{{ url_for('auth.signup') }}" method="post" class="login__create none" id="login-up">
                         <h1 class="login__title">Create Account</h1>
     
                         <div class="login__box">
